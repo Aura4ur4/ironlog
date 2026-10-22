@@ -67,7 +67,7 @@ input, select, textarea { font-size: 17px; }
 /* ---------- layout ---------- */
 #app { position: fixed; inset: 0; display: flex; flex-direction: column; }
 #main {
-  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  flex: 1; overflow-y: auto;
   padding: 0 16px calc(96px + env(safe-area-inset-bottom));
 }
 .page { max-width: 640px; margin: 0 auto; }
@@ -415,6 +415,64 @@ tr.done .chk { background: var(--done); color: #fff; animation: clunk .28s ease-
 .edit-set .u { color: var(--text2); font-size: 14px; }
 .edit-set .no { color: var(--text2); font-weight: 700; text-align: center; }
 
+/* ---------- home numbers ---------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 10px; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 14px 4px; }
+.kpis > div { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.kpis > div + div { border-left: .5px solid var(--line); }
+.kpis b { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kpis b small { font-size: 15px; color: var(--text2); font-weight: 600; }
+.kpis span { font-size: 12px; color: var(--text2); white-space: nowrap; }
+
+/* ---------- workout: lighter header, compact suggestion ---------- */
+.wk-clock b small { font-size: 15px; color: var(--text2); font-weight: 600; }
+.exc-h { padding-bottom: 8px; }
+.sugc { display: flex; align-items: center; gap: 6px; margin: 0 12px 10px; padding: 6px 6px 6px 12px; border-radius: 12px; background: var(--accent-soft); font-size: 14px; }
+.sugc .t { flex: 1; min-width: 0; font-weight: 600; color: var(--accent); }
+.sugc .t svg { width: 14px; height: 14px; vertical-align: -2px; }
+.sugc button { min-height: 34px; padding: 0 12px; border-radius: 9px; font-weight: 600; font-size: 14px; color: var(--accent); background: var(--surface); }
+.sugc button.y { background: var(--accent); color: var(--accent-ink); }
+.sugc button.x { width: 34px; padding: 0; display: grid; place-items: center; color: var(--text2); background: transparent; }
+.sugc button.x svg { width: 16px; height: 16px; }
+.sugc.ok { background: var(--done-soft); }
+.sugc.ok .t { color: var(--done); }
+#wk-head .mid { border-radius: 10px; padding: 2px 4px; }
+
+/* ---------- exercise picker (full screen, above workout) ---------- */
+#picker {
+  position: fixed; inset: 0; z-index: 55; background: var(--bg); display: flex; flex-direction: column;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+}
+#picker.away { transform: translateY(105%); pointer-events: none; }
+.pk-head {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: calc(env(safe-area-inset-top) + 4px) max(8px, env(safe-area-inset-right)) 0 max(8px, env(safe-area-inset-left));
+}
+.pk-head b { font-size: 17px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56vw; }
+.pk-head .navbtn:first-child { justify-self: start; } .pk-head .navbtn:last-child { justify-self: end; font-weight: 600; }
+.pk-tools { padding: 6px 16px 8px; border-bottom: .5px solid var(--line); }
+.pk-tools .search { height: 44px; margin-bottom: 10px; }
+.pk-tools .search input { font-size: 17px; }
+#pk-list { flex: 1; overflow-y: auto; padding: 0 16px; }
+.pk-label { font-size: 13px; font-weight: 600; color: var(--text2); margin: 18px 4px 6px; }
+.pk-group { background: var(--surface); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow); }
+.pk-group:first-child { margin-top: 12px; }
+.pk-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 10px 12px 10px 14px; min-height: 60px; position: relative; }
+.pk-row + .pk-row::before { content: ""; position: absolute; top: 0; left: 58px; right: 0; border-top: .5px solid var(--line); }
+.pk-dot { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 14px; flex: none; }
+.pk-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pk-name { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pk-meta { font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pk-add { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--accent-soft); color: var(--accent); transition: background .15s; }
+.pk-add svg { width: 18px; height: 18px; }
+.pk-row.sel { background: var(--accent-soft); }
+.pk-row.sel .pk-add { background: var(--accent); color: var(--accent-ink); }
+#pk-bar {
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) max(16px, env(safe-area-inset-left));
+  background: var(--bar); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-top: .5px solid var(--line);
+}
+#pk-done:disabled { background: var(--fill); color: var(--text2); opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -434,7 +492,7 @@ tr.done .chk { background: var(--done); color: #fff; animation: clunk .28s ease-
 <section id="workout" class="away" aria-hidden="true" aria-label="Active workout">
   <header id="wk-head">
     <button class="navbtn" data-a="wkMin" aria-label="Minimize workout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
-    <button class="mid" data-a="wkRename" aria-label="Rename workout"><b id="wk-title">Workout</b><span id="wk-sub">0:00</span></button>
+    <button class="mid" data-a="wkMenu" aria-label="Workout options"><b id="wk-title">Workout</b><span id="wk-sub" class="num">0:00</span></button>
     <button class="finish" data-a="wkFinish">Finish</button>
   </header>
   <div id="wk-body"><div class="inner" id="wk-inner"></div></div>
@@ -447,6 +505,19 @@ tr.done .chk { background: var(--done); color: #fff; animation: clunk .28s ease-
       <button class="rb skip" data-a="restSkip">Skip</button>
     </div>
   </div>
+</section>
+<section id="picker" class="away" aria-hidden="true" aria-label="Choose exercises">
+  <header class="pk-head">
+    <button class="navbtn" data-pk="close">Cancel</button>
+    <b id="pk-title">Add exercises</b>
+    <button class="navbtn" data-pk="new">New</button>
+  </header>
+  <div class="pk-tools">
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="pk-q" type="search" placeholder="Search exercises" autocomplete="off" autocorrect="off" enterkeyhint="search"></div>
+    <div class="chips" id="pk-chips"></div>
+  </div>
+  <div id="pk-list"></div>
+  <div id="pk-bar"><button class="btn block" id="pk-done" data-pk="done" disabled>Tap exercises to select</button></div>
 </section>
 <div id="toast" role="status"></div>
 <script>
@@ -1031,7 +1102,7 @@ tr.done .chk { background: var(--done); color: #fff; animation: clunk .28s ease-
 (function () {
 'use strict';
 /* ===== Ironlog app core: state, persistence, navigation, UI primitives ===== */
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const $ = (sel, el) => (el || document).querySelector(sel);
 const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1506,7 +1577,7 @@ function viewHome() {
       <button class="btn secondary" data-a="startPicker">Train again</button></div></div>`;
   } else if (today) {
     const exs = today.exercises;
-    todayCard = `<div class="today"><div class="kicker">Today · ${esc(DAYS_LONG[GL.monIndex(now)])}</div><h2>${esc(today.name)}</h2>
+    todayCard = `<div class="today"><div class="kicker">${esc(DAYS_LONG[GL.monIndex(now)])}</div><h2>${esc(today.name)}</h2>
       ${exs.length ? `<ul>${exs.slice(0, 6).map(e => `<li><span>${esc(exById(e.exId).name)}</span><span class="num">${e.sets} × ${e.repMin}–${e.repMax}</span></li>`).join('')}
       ${exs.length > 6 ? `<li><span>+ ${exs.length - 6} more</span><span></span></li>` : ''}</ul>` : `<p style="color:var(--text2)">No exercises yet.</p>`}
       <button class="btn block" data-a="startDay" data-plan="${plan.id}" data-day="${today.id}">Start workout</button></div>`;
@@ -1524,22 +1595,19 @@ function viewHome() {
       <span class="dn">${DAYS_LETTER[d.i]}</span><span class="c">${inner}</span><span class="lab">${d.day ? esc(shortName(d.day.name)) : 'Rest'}</span></div>`;
   }).join('')}</div>`;
 
-  const prs = topPRs(records().events).slice(-5).reverse();
+  const prs = topPRs(records().events).slice(-3).reverse();
 
   const backupDue = fin.length >= 5 && (!S.settings.lastBackup || now - S.settings.lastBackup > 14 * 864e5);
 
-  return `<div class="page">${largeTitle(greeting(), fmtDateLong(now))}
+  return `<div class="page">${largeTitle('Today', fmtDateLong(now))}
     ${todayCard}
     <div class="section-h"><h2>This week</h2>${plan ? `<button class="link" data-a="tab" data-tab="workouts">${esc(plan.name)}</button>` : ''}</div>
     ${week}
-    <div class="stats" style="margin-top:10px">
-      <div class="stat" style="display:flex;align-items:center;gap:12px;grid-column:1/-1">
-        ${ring(pct, wk.scheduled ? Math.round(pct * 100) + '%' : '–')}
-        <div><div class="k">Weekly completion</div><div class="v" style="font-size:20px">${wk.hit} of ${wk.scheduled} workouts</div>
-        <div class="d">${wk.scheduled - wk.hit > 0 ? `${wk.scheduled - wk.hit} to go this week` : wk.scheduled ? 'Week complete' : 'No training days scheduled'}</div></div></div>
-      <div class="stat"><div class="k">Workouts</div><div class="v">${fin.length}</div><div class="d">all time</div></div>
-      <div class="stat"><div class="k">Streak</div><div class="v">${st.value}<small>${st.unit === 'week' ? (st.value === 1 ? 'week' : 'weeks') : ''}</small></div><div class="d">${st.unit === 'week' ? 'weeks in a row' : 'scheduled workouts in a row'}</div></div>
-      <div class="stat" style="grid-column:1/-1"><div class="k">Total volume lifted</div><div class="v">${GL.fmtVolume(totalVol, U())}<small>${U()}</small></div><div class="d">weight × reps across every completed set</div></div>
+    <div class="kpis">
+      <div><b>${wk.hit}<small>/${wk.scheduled}</small></b><span>This week</span></div>
+      <div><b>${st.value}</b><span>${st.unit === 'week' ? 'Week streak' : 'Streak'}</span></div>
+      <div><b>${fin.length}</b><span>Workouts</span></div>
+      <div><b>${GL.fmtVolume(totalVol, U())}</b><span>${U()} lifted</span></div>
     </div>
     <div class="section-h"><h2>Recent records</h2>${prs.length ? `<button class="link" data-a="goAnalytics">See all</button>` : ''}</div>
     ${prs.length ? `<div class="group">${prs.map(e => `<button class="row" data-a="openExercise" data-id="${e.exId}">
@@ -1653,15 +1721,6 @@ function applyLibSearch() {
   const q = S.ui.libQ.trim().toLowerCase();
   $$('.lib-row').forEach(r => r.classList.toggle('hidden', !!q && !r.dataset.name.includes(q)));
   $$('.lib-group').forEach(g => g.classList.toggle('hidden', !$$('.lib-row:not(.hidden)', g).length));
-}
-
-// picker (pushed)
-function viewPick(v) {
-  const sel = v.selected || (v.selected = []);
-  const single = v.mode === 'replace';
-  return `<div class="page">${navbar(single ? 'Replace exercise' : 'Add exercises', `<button class="navbtn" data-a="newCustom" aria-label="New exercise">${I.plus}</button>`)}
-    ${libFilters()}<div id="liblist">${libraryList('pick', sel)}</div>
-    ${sel.length ? `<div class="pick-bar"><button class="btn block" data-a="pickDone">${single ? 'Replace' : `Add ${sel.length} exercise${sel.length === 1 ? '' : 's'}`}</button></div>` : ''}</div>`;
 }
 
 // templates (pushed)
@@ -1812,6 +1871,15 @@ function sugText(sg) {
   if (sg.kind === 'down') return `Drop to ${wu(sg.weight)} × ${sg.repMin}–${sg.repMax}`;
   if (sg.kind === 'hold') return `Stay at ${wu(sg.weight)}`;
   return sg.weight ? `Stay at ${wu(sg.weight)}, add a rep` : `Add a rep per set`;
+}
+function sugCompact(exId) {
+  const sg = S.suggestions[exId];
+  if (sg.status === 'accepted') return `<div class="sugc ok"><span class="t">${I.check} Target: ${esc(sugText(sg))}</span><button data-a="sugUndo" data-id="${exId}">Undo</button></div>`;
+  const changes = sg.kind === 'up' || sg.kind === 'down';
+  return `<div class="sugc"><span class="t">${esc(sugText(sg))}</span>
+    ${changes ? `<button data-a="sugModify" data-id="${exId}">Edit</button>` : ''}
+    <button class="y" data-a="sugAccept" data-id="${exId}">${changes ? 'Use' : 'OK'}</button>
+    <button class="x" data-a="sugReject" data-id="${exId}" aria-label="Dismiss suggestion">${I.x}</button></div>`;
 }
 function sugBlock(exId) {
   const sg = S.suggestions[exId];
@@ -2113,7 +2181,7 @@ function render() {
     const v = currentView();
     html = ({
       home: viewHome, workouts: viewWorkouts, progress: viewProgress, profile: viewProfile,
-      plan: viewPlan, day: viewDay, pick: viewPick, templates: viewTemplates, session: viewSession, summary: viewSummary,
+      plan: viewPlan, day: viewDay, templates: viewTemplates, session: viewSession, summary: viewSummary,
       exercise: viewExercise, bodyEntry: viewBodyEntry, compare: viewCompare
     })[v.view](v);
   }
@@ -2262,20 +2330,18 @@ function renderWorkout() {
     }).join('');
     return `<section class="exc" aria-label="${esc(ex.name)}">
       <div class="exc-h"><div class="grow"><button class="name" data-a="exMore" data-e="${ei}">${esc(ex.name)}</button>
-        <div class="meta">${esc(GL.MUSCLE_NAME[ex.muscle])} · ${esc(GL.EQUIPMENT_NAME[ex.equipment] || '')} · goal ${wex.target.repMin}–${wex.target.repMax} reps · rest ${restLabel(wex.rest)}</div></div>
+        <div class="meta">${wex.target.repMin}–${wex.target.repMax} reps · ${restLabel(wex.rest)} rest</div></div>
         <button class="more" data-a="exMore" data-e="${ei}" aria-label="Options for ${esc(ex.name)}">${I.more}</button></div>
-      <div class="prev">${prev ? `Last time, ${esc(relDay(prev.date).toLowerCase() === 'today' ? 'today' : relDay(prev.date))}: ${esc(prev.sets.map(setStr).join(' · '))}` : 'First time logging this exercise'}</div>
-      ${sg && (sg.status === 'pending' || sg.status === 'accepted') && sg.sessionId !== a.id ? sugBlock(wex.exId) : ''}
-      <table class="sets"><thead><tr><th>Set</th><th class="prevh">Previous</th><th>${U()}</th><th>Reps</th><th><span class="hidden">Done</span>${I.check.replace('<svg', '<svg width="14" height="14" style="vertical-align:-2px"')}</th></tr></thead><tbody>${rows}</tbody></table>
+      ${sg && (sg.status === 'pending' || sg.status === 'accepted') && sg.sessionId !== a.id ? sugCompact(wex.exId) : ''}
+      <table class="sets"><thead><tr><th>Set</th><th class="prevh">Last time</th><th>${U()}</th><th>Reps</th><th><span class="hidden">Done</span>${I.check.replace('<svg', '<svg width="14" height="14" style="vertical-align:-2px"')}</th></tr></thead><tbody>${rows}</tbody></table>
       ${wex.showNotes || wex.notes ? `<textarea class="note-in" rows="1" data-in="exNote" data-e="${ei}" placeholder="Notes: form, seat height, how it felt">${esc(wex.notes)}</textarea>` : ''}
       <button class="addset" data-a="addSet" data-e="${ei}">${I.plus} Add set</button></section>`;
   }).join('');
   $('#wk-inner').innerHTML = `
-    <div class="wk-clock"><div><b id="wk-elapsed">${fmtDur(Date.now() - a.start)}</b>Duration</div><div><b>${GL.fmtVolume(st.v, U())}</b>Volume, ${U()}</div><div><b>${st.done}/${st.total}</b>Sets</div></div>
-    ${cards || `<div class="empty"><b>No exercises yet</b>Add the exercises you're doing today.</div>`}
-    <button class="btn block secondary" data-a="wkAddEx">${I.plus} Add exercise</button>
-    <label class="field" style="margin-top:14px"><span>Workout notes</span><textarea data-in="wkNote" rows="2" placeholder="Energy, sleep, anything worth remembering">${esc(a.notes || '')}</textarea></label>
-    <button class="btn block danger" data-a="wkDiscard">Discard workout</button>`;
+    <div class="wk-clock"><div><b>${st.done}<small>/${st.total}</small></b>Sets done</div><div><b>${GL.fmtVolume(st.v, U())}</b>${U()} lifted</div></div>
+    ${cards || `<div class="empty"><b>No exercises yet</b>Add what you're training today.</div>`}
+    <button class="btn block" data-a="wkAddEx">${I.plus} Add exercise</button>
+    ${a.showNotes || a.notes ? `<label class="field" style="margin-top:14px"><span>Workout note</span><textarea data-in="wkNote" rows="2" placeholder="Energy, sleep, anything worth remembering">${esc(a.notes || '')}</textarea></label>` : ''}`;
   $('#wk-sub').textContent = fmtDur(Date.now() - a.start);
   updateRest();
 }
@@ -2338,7 +2404,7 @@ function updateRest() {
 }
 
 // ---------- finish / discard ----------
-async function finishWorkout() {
+async function finishWorkout(skipConfirm) {
   const a = S.active; if (!a || finishing) return;
   const st = wkStats();
   if (!st.done) {
@@ -2347,14 +2413,14 @@ async function finishWorkout() {
     return;
   }
   const undone = st.total - st.done;
-  if (undone) {
+  if (undone && !skipConfirm) {
     const ok = await confirmDialog('Finish workout?', `${undone} unchecked set${undone === 1 ? '' : 's'} won't be saved.`, 'Finish workout');
     if (!ok) return;
   }
   finishing = true;
   try {
     const s = {
-      id: a.id, name: a.name, planId: a.planId, dayId: a.dayId, start: a.start, end: Date.now(), notes: (a.notes || '').trim(),
+      id: a.id, name: a.name, planId: a.planId, dayId: a.dayId, start: a.start, end: endTime(a), notes: (a.notes || '').trim(),
       exercises: a.exercises.map(e => ({
         exId: e.exId, notes: (e.notes || '').trim(), target: e.target, rest: e.rest,
         sets: e.sets.filter(x => x.done).map(x => ({ w: x.w || 0, r: x.r, done: true, warmup: !!x.warmup }))
@@ -2416,10 +2482,36 @@ function updateResume() {
 function tick() {
   if (!S.active) return;
   const t = fmtDur(Date.now() - S.active.start);
-  const e1 = $('#wk-elapsed'); if (e1) e1.textContent = t;
   $('#wk-sub').textContent = t;
   updateRest();
   updateResume();
+}
+
+// When a workout was left running (phone locked, forgot to tap Finish), end it at the last set, not now.
+function lastActivity(a) {
+  let t = a.start;
+  for (const e of a.exercises) for (const s of e.sets) if (s.done && s.doneAt > t) t = s.doneAt;
+  return t;
+}
+function endTime(a) {
+  const last = lastActivity(a);
+  return Date.now() - last > 2 * 3600e3 ? last + 60e3 : Date.now();
+}
+let staleAsked = false;
+async function staleCheck() {
+  const a = S.active;
+  if (!a || staleAsked || Date.now() - lastActivity(a) < 3 * 3600e3) return;
+  staleAsked = true;
+  const done = wkStats().done;
+  const opts = done ? [{ label: `Finish and save (${done} set${done === 1 ? '' : 's'})`, value: 'finish' }] : [];
+  opts.push({ label: 'Keep training', value: 'keep' }, { label: 'Discard workout', value: 'discard', danger: true });
+  const c = await actionSheet(`"${a.name}" was left open since ${relDay(a.start).toLowerCase() === 'today' ? fmtTime(a.start) : relDay(a.start) + ' ' + fmtTime(a.start)}`, opts);
+  staleAsked = false;
+  if (!S.active || S.active.id !== a.id) return;
+  if (c === 'finish') finishWorkout(true);
+  else if (c === 'discard') discardWorkout(true);
+  else if (c === 'keep') { a.start = Date.now(); saveActive(true); renderWorkout(); }
+  else staleAsked = true;
 }
 
 /* ===== Actions, inputs and boot ===== */
@@ -2431,8 +2523,8 @@ function savePlanSoon(p) { clearTimeout(planSaveT); planSaveT = setTimeout(() =>
 function rerender() { render(); if (S.active && S.ui.wkOpen) renderWorkout(); }
 function rootTo(tab) { S.ui.stacks[tab] = []; }
 
-async function customExerciseForm(existing) {
-  const e = existing || {};
+async function customExerciseForm(existing, presetName) {
+  const e = existing || { name: presetName || '' };
   const opts = (list, sel) => list.map(([k, l]) => `<option value="${k}" ${sel === k ? 'selected' : ''}>${esc(l)}</option>`).join('');
   const res = await formSheet(existing ? 'Edit exercise' : 'New exercise', `
     <label class="field"><span>Name</span><input name="name" data-autofocus value="${esc(e.name || '')}" placeholder="e.g. Landmine Press" autocomplete="off"></label>
@@ -2527,7 +2619,6 @@ function csvExport() {
 const ACT = {
   back() {
     const v = cv();
-    if (v.view === 'pick' && (v.mode === 'workout' || v.mode === 'replace')) { pop(); openWorkout(); return; }
     if (v.view === 'session' && v.draft) { v.draft = null; }
     pop();
   },
@@ -2595,32 +2686,13 @@ const ACT = {
   dexMove(d) { const day = curDay(); const i = +d.i, j = i + +d.d; if (j < 0 || j >= day.exercises.length) return; [day.exercises[i], day.exercises[j]] = [day.exercises[j], day.exercises[i]]; save.plan(curPlan()); render(); },
   dexRemove(d) { const day = curDay(); const [r] = day.exercises.splice(+d.i, 1); save.plan(curPlan()); render(); toast(`Removed ${exById(r.exId).name}`); },
   dexSets(d) { const e = curDay().exercises[+d.i]; e.sets = Math.max(1, Math.min(10, e.sets + +d.d)); save.plan(curPlan()); render(); },
-  pickFor(d) { const v = cv(); push('pick', { mode: d.mode, plan: v.plan, day: v.day, selected: [] }); },
-  pickToggle(d) {
-    const v = cv(); const sel = v.selected;
-    if (v.mode === 'replace') { v.selected = sel[0] === d.id ? [] : [d.id]; }
-    else { const i = sel.indexOf(d.id); if (i >= 0) sel.splice(i, 1); else sel.push(d.id); }
-    const sc = $('#main').scrollTop; render(); $('#main').scrollTop = sc;
-  },
-  pickDone() {
-    const v = cv(); const ids = v.selected.slice();
-    if (v.mode === 'day') {
-      const p = S.plans.find(x => x.id === v.plan); const day = planDay(p, v.day);
-      for (const id of ids) { const e = exById(id); day.exercises.push({ exId: id, sets: 3, repMin: e.repMin, repMax: e.repMax, weight: null, rest: e.rest }); }
-      save.plan(p); pop();
-    } else if (v.mode === 'workout') {
-      for (const id of ids) S.active.exercises.push(newWex(id));
-      saveActive(true); pop(); openWorkout();
-      setTimeout(() => { const b = $('#wk-body'); b.scrollTop = b.scrollHeight; }, 50);
-    } else if (v.mode === 'replace') {
-      const wex = S.active.exercises[v.e];
-      const ex = exById(ids[0]);
-      wex.exId = ids[0];
-      wex.target = { sets: wex.sets.length, repMin: ex.repMin, repMax: ex.repMax, weight: null };
-      wex.rest = ex.rest || wex.rest;
-      wex.sets = wex.sets.map(s => ({ w: null, r: null, done: false, warmup: s.warmup }));
-      saveActive(true); pop(); openWorkout();
-    }
+  async pickFor() {
+    const p = curPlan(); const day = curDay();
+    const ids = await pickExercises('multi', 'Add to ' + day.name, day.exercises.map(e => e.exId));
+    if (!ids) return;
+    for (const id of ids) { const e = exById(id); day.exercises.push({ exId: id, sets: 3, repMin: e.repMin, repMax: e.repMax, weight: null, rest: e.rest }); }
+    await save.plan(p); render();
+    toast(ids.length === 1 ? `Added ${exById(ids[0]).name}` : `Added ${ids.length} exercises`);
   },
   tplSel(d) { cv().sel = d.k; render(); },
   async tplCreate() {
@@ -2635,8 +2707,6 @@ const ACT = {
   async newCustom() {
     const ex = await customExerciseForm(null);
     if (!ex) return;
-    const v = cv();
-    if (v.view === 'pick') { if (v.mode === 'replace') v.selected = [ex.id]; else v.selected.push(ex.id); }
     render(); toast(`${ex.name} added to the library`);
   },
   async editCustom(d) { const ex = S.custom.find(x => x.id === d.id); if (await customExerciseForm(ex)) render(); },
@@ -2778,8 +2848,13 @@ const ACT = {
       if (r) { wex.rest = r; if (a.restEnd) { a.restEnd = a.restEnd - a.restTotal * 1000 + r * 1000; a.restTotal = r; } }
     } else if (c === 'replace') {
       if (wex.sets.some(x => x.done) && !await confirmDialog('Replace exercise?', 'Completed sets for this exercise will be cleared.', 'Replace')) return;
-      minimizeWorkout(); push('pick', { mode: 'replace', e: i, selected: [] });
-      return;
+      const id = await pickExercises('single', 'Replace ' + exById(wex.exId).name);
+      if (!id || !S.active || S.active.exercises[i] !== wex) return;
+      const ex = exById(id);
+      wex.exId = id;
+      wex.target = { sets: wex.sets.length, repMin: ex.repMin, repMax: ex.repMax, weight: null };
+      wex.rest = ex.rest || wex.rest;
+      wex.sets = wex.sets.map(s => ({ w: null, r: null, done: false, warmup: s.warmup }));
     } else if (c === 'up' || c === 'down') {
       const j = c === 'up' ? i - 1 : i + 1;
       [a.exercises[i], a.exercises[j]] = [a.exercises[j], a.exercises[i]];
@@ -2789,7 +2864,24 @@ const ACT = {
     } else return;
     saveActive(true); renderWorkout();
   },
-  wkAddEx() { minimizeWorkout(); push('pick', { mode: 'workout', selected: [] }); },
+  async wkAddEx() {
+    const ids = await pickExercises('multi', 'Add exercises', S.active.exercises.map(e => e.exId));
+    if (!ids || !S.active) return;
+    for (const id of ids) S.active.exercises.push(newWex(id));
+    saveActive(true); renderWorkout();
+    toast(ids.length === 1 ? `Added ${exById(ids[0]).name}` : `Added ${ids.length} exercises`);
+    setTimeout(() => { const b = $('#wk-body'); b.scrollTo({ top: b.scrollHeight, behavior: 'smooth' }); }, 60);
+  },
+  async wkMenu() {
+    const c = await actionSheet(S.active.name, [
+      { label: 'Rename workout', value: 'rename' },
+      { label: S.active.showNotes || S.active.notes ? 'Hide workout note' : 'Add workout note', value: 'note' },
+      { label: 'Discard workout', value: 'discard', danger: true }
+    ]);
+    if (c === 'rename') ACT.wkRename();
+    else if (c === 'note') { S.active.showNotes = !(S.active.showNotes || S.active.notes); renderWorkout(); }
+    else if (c === 'discard') discardWorkout();
+  },
   restAdj(d) { const a = S.active; if (!a.restEnd) return; a.restEnd += +d.d * 1000; a.restTotal = Math.max(1, a.restTotal + +d.d); if (a.restEnd <= Date.now()) a.restEnd = Date.now() + 1000; saveActive(); updateRest(); },
   restSkip() { S.active.restEnd = null; restOverUntil = 0; saveActive(); updateRest(); }
 };
@@ -2884,7 +2976,7 @@ document.addEventListener('focusin', e => {
 });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { if (S.active) saveActive(true); }
-  else { requestWakeLock(); tick(); }
+  else { requestWakeLock(); tick(); staleCheck(); }
 });
 window.addEventListener('pagehide', () => { if (S.active) saveActive(true); });
 
@@ -2893,13 +2985,111 @@ async function boot() {
   applyTheme();
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
   render();
-  if (S.active) openWorkout();
+  if (S.active) { openWorkout(); staleCheck(); }
   setInterval(tick, 250);
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
 }
 boot();
+
+/* ===== Exercise picker: full-screen layer above everything, so its button can never be covered ===== */
+const PK = { mode: 'multi', selected: [], muscle: 'all', q: '', resolve: null, exclude: [] };
+
+function recentExerciseIds(limit) {
+  const seen = [];
+  const fin = finishedSessions();
+  for (let i = fin.length - 1; i >= 0 && seen.length < limit; i--) {
+    for (const ex of fin[i].exercises) if (!seen.includes(ex.exId) && !exById(ex.exId).missing) seen.push(ex.exId);
+  }
+  return seen.slice(0, limit);
+}
+
+// mode 'multi' resolves with an array of ids, 'single' with one id; null if cancelled.
+function pickExercises(mode, title, exclude) {
+  if (PK.resolve) PK.resolve(null);
+  Object.assign(PK, { mode, selected: [], q: '', muscle: 'all', exclude: exclude || [] });
+  $('#pk-title').textContent = title;
+  $('#pk-q').value = '';
+  const el = $('#picker');
+  el.classList.remove('away'); el.removeAttribute('aria-hidden');
+  renderPicker();
+  $('#pk-list').scrollTop = 0;
+  return new Promise(res => { PK.resolve = res; });
+}
+function closePicker(value) {
+  const el = $('#picker');
+  el.classList.add('away'); el.setAttribute('aria-hidden', 'true');
+  $('#pk-q').blur();
+  const r = PK.resolve; PK.resolve = null;
+  if (r) r(value);
+}
+
+function pkRow(e) {
+  const sel = PK.selected.includes(e.id);
+  const inWk = PK.exclude.includes(e.id);
+  return `<button class="pk-row ${sel ? 'sel' : ''}" data-pk="toggle" data-id="${e.id}" aria-pressed="${sel}">
+    <span class="pk-dot" style="background:${muscleColor(e.muscle)}">${esc(e.name[0])}</span>
+    <span class="pk-txt"><span class="pk-name">${esc(e.name)}</span><span class="pk-meta">${esc(GL.MUSCLE_NAME[e.muscle])} · ${esc(GL.EQUIPMENT_NAME[e.equipment] || '')}${inWk ? ' · already added' : ''}</span></span>
+    <span class="pk-add">${sel ? I.check : I.plus}</span></button>`;
+}
+
+function renderPicker() {
+  const q = PK.q.trim().toLowerCase();
+  const all = allExercises().filter(e => !e.hidden);
+  $('#pk-chips').innerHTML = [['all', 'All']].concat(GL.MUSCLES).map(([k, l]) =>
+    `<button class="pill" aria-pressed="${PK.muscle === k}" data-pk="muscle" data-k="${k}">${esc(l)}</button>`).join('');
+  let html = '';
+  if (q) {
+    const words = q.split(/\s+/);
+    const norm = s => s.toLowerCase().replace(/-/g, ' ');
+    const score = e => { const n = norm(e.name), qq = norm(q); return n === qq ? 0 : n.startsWith(qq) ? 1 : n.includes(qq) ? 2 : 3; };
+    const hits = all.filter(e => words.every(wd => (e.name + ' ' + GL.MUSCLE_NAME[e.muscle] + ' ' + (GL.EQUIPMENT_NAME[e.equipment] || '')).toLowerCase().includes(wd)))
+      .sort((a, b) => score(a) - score(b) || a.name.localeCompare(b.name));
+    html = hits.length ? `<div class="pk-group">${hits.map(pkRow).join('')}</div>`
+      : `<div class="empty"><b>No match for “${esc(PK.q.trim())}”</b>Create it as your own exercise.<br><button class="btn" data-pk="new">Create “${esc(PK.q.trim())}”</button></div>`;
+  } else {
+    const list = PK.muscle === 'all' ? all : all.filter(e => e.muscle === PK.muscle);
+    if (PK.muscle === 'all') {
+      const rec = recentExerciseIds(8).map(exById);
+      if (rec.length) html += `<div class="pk-label">Recent</div><div class="pk-group">${rec.map(pkRow).join('')}</div>`;
+    }
+    for (const [k, name] of GL.MUSCLES) {
+      const g = list.filter(e => e.muscle === k).sort((a, b) => a.name.localeCompare(b.name));
+      if (g.length) html += `<div class="pk-label">${esc(name)}</div><div class="pk-group">${g.map(pkRow).join('')}</div>`;
+    }
+  }
+  $('#pk-list').innerHTML = html + '<div style="height:12px"></div>';
+  const n = PK.selected.length;
+  const btn = $('#pk-done');
+  btn.disabled = !n;
+  btn.textContent = n ? (n === 1 ? 'Add 1 exercise' : `Add ${n} exercises`) : 'Tap exercises to select';
+  $('#pk-bar').classList.toggle('hidden', PK.mode === 'single');
+}
+
+$('#picker').addEventListener('click', async e => {
+  const b = e.target.closest('[data-pk]'); if (!b) return;
+  e.preventDefault();
+  const act = b.dataset.pk;
+  if (act === 'close') closePicker(null);
+  else if (act === 'toggle') {
+    if (PK.mode === 'single') { haptic(); closePicker(b.dataset.id); return; }
+    const i = PK.selected.indexOf(b.dataset.id);
+    if (i >= 0) PK.selected.splice(i, 1); else { PK.selected.push(b.dataset.id); haptic(); }
+    const sc = $('#pk-list').scrollTop; renderPicker(); $('#pk-list').scrollTop = sc;
+  } else if (act === 'muscle') {
+    PK.muscle = b.dataset.k; renderPicker(); $('#pk-list').scrollTop = 0;
+  } else if (act === 'done') {
+    if (PK.selected.length) closePicker(PK.selected.slice());
+  } else if (act === 'new') {
+    const ex = await customExerciseForm(null, PK.q.trim());
+    if (!ex) return;
+    if (PK.mode === 'single') { closePicker(ex.id); return; }
+    PK.selected.push(ex.id); PK.q = ''; $('#pk-q').value = '';
+    renderPicker(); toast(`${ex.name} created`);
+  }
+});
+$('#pk-q').addEventListener('input', e => { PK.q = e.target.value; renderPicker(); $('#pk-list').scrollTop = 0; });
 
 })();
 </script>
